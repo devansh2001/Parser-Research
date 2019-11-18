@@ -76,8 +76,8 @@ public class Converter {
         List<PickPath> list = new ArrayList<>();
 
         while (scanner.hasNext()) {
-            System.out.println("list so far");
-            System.out.println(list);
+//            System.out.println("list so far");
+//            System.out.println(list);
             String line = scanner.nextLine();
             line = line.trim();
             String[] tokens = line.split(",");
@@ -90,11 +90,12 @@ public class Converter {
                 String type = tokens[1];
                 pickPath.setType(type);
 
-                // 13, 14, 15
+//                System.out.println("PathId, Type: " + pathId + ", " + type);
+//                Token[13, 14, 15] -> book details
                 List<Book> booksInPath = new ArrayList<>();
                 while (!tokens[2].equals("orderedBooksAndLocations")) {
-                    System.out.println(line);
                     line = scanner.nextLine();
+                    tokens = line.split(",");
                 }
                 tokens = line.split(",");
 
@@ -108,7 +109,9 @@ public class Converter {
                     line = scanner.nextLine();
                     tokens = line.split(",");
                 }
+//                System.out.println(booksInPath);
                 pickPath.setBooksInPath(booksInPath);
+                list.add(pickPath);
             }
         }
 

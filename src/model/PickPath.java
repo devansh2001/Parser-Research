@@ -56,7 +56,6 @@ public class PickPath {
         str += "PathId: " + pathId;
         str += "Type: " + type;
         str += "Books: " + booksInPath;
-        str += "\n******\n";
         return str;
     }
 }

@@ -35,7 +35,6 @@ public class Book {
         str += "Name: " + name + ", ";
         str += "Author: " + author + ", ";
         str += "LocationTag: " + locationTag + "\n";
-        str += "****\n";
         return str;
     }
 }
