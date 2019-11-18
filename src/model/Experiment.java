@@ -38,7 +38,6 @@ public class Experiment {
         str = "ParticipantId: " + participantId + "\n";
         str += "Training: " + trainingPathOrder + "\n";
         str += "Testing: " + testingPathOrder + "\n";
-        str += "********\n";
         return str;
 
     }

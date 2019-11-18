@@ -9,6 +9,12 @@ public class Converter {
     Scanner scanner;
     File file;
     public final static int NUMBER_OF_BOOKS_PER_PATH_ID = 10;
+    public final static int BOOK_NAME_POSITION_IN_TOKEN = 13;
+    public final static int BOOK_AUTHOR_POSITION_IN_TOKEN = 14;
+    public final static int BOOK_TAG_POSITION_IN_TOKEN = 15;
+    public final static int PATH_ID_POSITION_IN_TOKEN = 0;
+    public final static int TYPE_POSITION_IN_TOKEN = 1;
+    public final static int ORDER_OR_UNORDERED_POSITION_IN_TOKEN = 2;
 
     public Converter() {
 
@@ -83,17 +89,17 @@ public class Converter {
             String[] tokens = line.split(",");
             PickPath pickPath = new PickPath();
 
-            if (!tokens[0].equals("")) {
-                String pathId = tokens[0];
+            if (!tokens[PATH_ID_POSITION_IN_TOKEN].equals("")) {
+                String pathId = tokens[PATH_ID_POSITION_IN_TOKEN];
                 pickPath.setPathId(pathId);
 
-                String type = tokens[1];
+                String type = tokens[TYPE_POSITION_IN_TOKEN];
                 pickPath.setType(type);
 
 //                System.out.println("PathId, Type: " + pathId + ", " + type);
 //                Token[13, 14, 15] -> book details
                 List<Book> booksInPath = new ArrayList<>();
-                while (!tokens[2].equals("orderedBooksAndLocations")) {
+                while (!tokens[ORDER_OR_UNORDERED_POSITION_IN_TOKEN].equals("orderedBooksAndLocations")) {
                     line = scanner.nextLine();
                     tokens = line.split(",");
                 }
@@ -101,9 +107,9 @@ public class Converter {
 
                 for (int i = 0; i < NUMBER_OF_BOOKS_PER_PATH_ID; i++) {
                     Book book = new Book();
-                    book.setName(tokens[13]);
-                    book.setAuthor(tokens[14]);
-                    book.setLocationTag(tokens[15]);
+                    book.setName(tokens[BOOK_NAME_POSITION_IN_TOKEN]);
+                    book.setAuthor(tokens[BOOK_AUTHOR_POSITION_IN_TOKEN]);
+                    book.setLocationTag(tokens[BOOK_TAG_POSITION_IN_TOKEN]);
                     booksInPath.add(book);
 
                     line = scanner.nextLine();
