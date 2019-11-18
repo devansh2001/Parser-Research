@@ -1,23 +1,31 @@
+import model.Book;
 import model.Experiment;
+import model.PickPath;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.*;
 
 public class Converter {
     Scanner scanner;
     File file;
+    public final static int NUMBER_OF_BOOKS_PER_PATH_ID = 10;
 
     public Converter() {
+
+    }
+
+    private void openFile(String filePath) {
         try {
-            File file = new File(getClass().getResource("result.csv").toURI());
+            File file = new File(getClass().getResource(filePath).toURI());
             scanner = new Scanner(file);
         } catch (Exception ex) {
             ex.printStackTrace();
         }
     }
 
-    public List<Experiment> generateList() {
+    public List<Experiment> parseExperiments() {
+        openFile("experiment.csv");
+
         List<Experiment> list = new ArrayList<>();
         scanner.nextLine();
         while (scanner.hasNext()) {
@@ -61,9 +69,62 @@ public class Converter {
         return list;
     }
 
+    public List<PickPath> parsePickPaths() {
+        openFile("pick-paths.csv");
+        scanner.nextLine();
+
+        List<PickPath> list = new ArrayList<>();
+
+        while (scanner.hasNext()) {
+            System.out.println("list so far");
+            System.out.println(list);
+            String line = scanner.nextLine();
+            line = line.trim();
+            String[] tokens = line.split(",");
+            PickPath pickPath = new PickPath();
+
+            if (!tokens[0].equals("")) {
+                String pathId = tokens[0];
+                pickPath.setPathId(pathId);
+
+                String type = tokens[1];
+                pickPath.setType(type);
+
+                // 13, 14, 15
+                List<Book> booksInPath = new ArrayList<>();
+                while (!tokens[2].equals("orderedBooksAndLocations")) {
+                    System.out.println(line);
+                    line = scanner.nextLine();
+                }
+                tokens = line.split(",");
+
+                for (int i = 0; i < NUMBER_OF_BOOKS_PER_PATH_ID; i++) {
+                    Book book = new Book();
+                    book.setName(tokens[13]);
+                    book.setAuthor(tokens[14]);
+                    book.setLocationTag(tokens[15]);
+                    booksInPath.add(book);
+
+                    line = scanner.nextLine();
+                    tokens = line.split(",");
+                }
+                pickPath.setBooksInPath(booksInPath);
+            }
+        }
+
+        System.out.println("Generated List");
+        System.out.println(list);
+
+        return list;
+    }
+
+
+
+
     public static void main(String[] args) {
         Converter converter = new Converter();
-        converter.generateList();
+//        converter.parseExperiments();
+        converter.parsePickPaths();
     }
 
 
