@@ -6,23 +6,53 @@ import java.io.File;
 import java.util.*;
 
 public class Converter {
-    Scanner scanner;
-    File file;
-    public final static int NUMBER_OF_BOOKS_PER_PATH_ID = 10;
-    public final static int BOOK_NAME_POSITION_IN_TOKEN = 13;
-    public final static int BOOK_AUTHOR_POSITION_IN_TOKEN = 14;
-    public final static int BOOK_TAG_POSITION_IN_TOKEN = 15;
-    public final static int PATH_ID_POSITION_IN_TOKEN = 0;
-    public final static int TYPE_POSITION_IN_TOKEN = 1;
-    public final static int ORDER_OR_UNORDERED_POSITION_IN_TOKEN = 2;
+    private Scanner scanner;
+    private File file;
+    private String pickPathsFileName;
+    private String experimentsFileName;
+
+    // constants used in experiments
+    private final static int PARTICIPANT_ID_POSITION_IN_TOKEN = 0;
+    private final static int NUMBER_OF_POSITIONS_ON_SCREEN = 4;
+    private final static int POSITION_NAME_POSITION_IN_TOKEN = 2;
+    private final static int PATH_ID_BEGIN_POSITION_IN_TOKEN = 3;
+    private final static int PATH_ID_END_POSITION_IN_TOKEN = 13;
+
+    // constants used in pick-paths
+    private final static int NUMBER_OF_BOOKS_PER_PATH_ID = 10;
+    private final static int BOOK_NAME_POSITION_IN_TOKEN = 13;
+    private final static int BOOK_AUTHOR_POSITION_IN_TOKEN = 14;
+    private final static int BOOK_TAG_POSITION_IN_TOKEN = 15;
+    private final static int PATH_ID_POSITION_IN_TOKEN = 0;
+    private final static int TYPE_POSITION_IN_TOKEN = 1;
+    private final static int ORDER_OR_UNORDERED_POSITION_IN_TOKEN = 2;
+
+
 
     public Converter() {
+        pickPathsFileName = "pick-paths.csv";
+        experimentsFileName = "experiment.csv";
+    }
 
+    public String getPickPathsFileName() {
+        return pickPathsFileName;
+    }
+
+    public void setPickPathsFileName(String pickPathsFileName) {
+        this.pickPathsFileName = pickPathsFileName;
+    }
+
+    public String getExperimentsFileName() {
+        return experimentsFileName;
+    }
+
+    public void setExperimentsFileName(String experimentsFileName) {
+        this.experimentsFileName = experimentsFileName;
     }
 
     private void openFile(String filePath) {
         try {
-            File file = new File(getClass().getResource(filePath).toURI());
+            file = new File(getClass().getResource(filePath).toURI());
             scanner = new Scanner(file);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -30,7 +60,7 @@ public class Converter {
     }
 
     public List<Experiment> parseExperiments() {
-        openFile("experiment.csv");
+        openFile(experimentsFileName);
 
         List<Experiment> list = new ArrayList<>();
         scanner.nextLine();
@@ -40,27 +70,27 @@ public class Converter {
             String[] tokens = line.split(",");
 
             Experiment experiment = new Experiment();
-            if (!tokens[0].equals("")) {
-                experiment.setParticipantId(tokens[0]);
+            if (!tokens[PARTICIPANT_ID_POSITION_IN_TOKEN].equals("")) {
+                experiment.setParticipantId(tokens[PARTICIPANT_ID_POSITION_IN_TOKEN]);
                 Map<String, List<Integer>> trainingPathOrder = new HashMap<>();
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < NUMBER_OF_POSITIONS_ON_SCREEN; i++) {
                     List<Integer> pathIds = new ArrayList<>();
-                    for (int tokenPosition = 3; tokenPosition < 13; tokenPosition++) {
+                    for (int tokenPosition = PATH_ID_BEGIN_POSITION_IN_TOKEN; tokenPosition < PATH_ID_END_POSITION_IN_TOKEN; tokenPosition++) {
                         pathIds.add(Integer.parseInt(tokens[tokenPosition]));
                     }
-                    trainingPathOrder.put(tokens[2], pathIds);
+                    trainingPathOrder.put(tokens[POSITION_NAME_POSITION_IN_TOKEN], pathIds);
                     line = scanner.nextLine().trim();
                     tokens = line.split(",");
                 }
                 experiment.setTrainingPathOrder(trainingPathOrder);
 
                 Map<String, List<Integer>> testingPathOrder = new HashMap<>();
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < NUMBER_OF_POSITIONS_ON_SCREEN; i++) {
                     List<Integer> pathIds = new ArrayList<>();
-                    for (int tokenPosition = 3; tokenPosition < 13; tokenPosition++) {
+                    for (int tokenPosition = PATH_ID_BEGIN_POSITION_IN_TOKEN; tokenPosition < PATH_ID_END_POSITION_IN_TOKEN; tokenPosition++) {
                         pathIds.add(Integer.parseInt(tokens[tokenPosition]));
                     }
-                    testingPathOrder.put(tokens[2], pathIds);
+                    testingPathOrder.put(tokens[POSITION_NAME_POSITION_IN_TOKEN], pathIds);
                     if (i != 3) {
                         tokens = scanner.nextLine().trim().split(",");
                     }
@@ -76,7 +106,7 @@ public class Converter {
     }
 
     public List<PickPath> parsePickPaths() {
-        openFile("pick-paths.csv");
+        openFile(pickPathsFileName);
         scanner.nextLine();
 
         List<PickPath> list = new ArrayList<>();
@@ -128,13 +158,9 @@ public class Converter {
     }
 
 
-
-
-    public static void main(String[] args) {
-        Converter converter = new Converter();
+//    public static void main(String[] args) {
+//        Converter converter = new Converter();
 //        converter.parseExperiments();
-        converter.parsePickPaths();
-    }
-
-
+//        converter.parsePickPaths();
+//    }
 }
